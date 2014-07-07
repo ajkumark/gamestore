@@ -8,9 +8,8 @@ from django.contrib.auth.models import User
 
 def home(request):
 	if request.user.is_authenticated():
-		# return HttpResponseRedirect(reverse('football'))
-		return HttpResponse('ts')
-	return render_to_response('home.html', {}, context_instance=RequestContext(request))
+		return HttpResponseRedirect(reverse('games'))
+	return render_to_response('login.html', {}, context_instance=RequestContext(request))
 
 def register(request):
 	if request.method == 'POST':
@@ -29,14 +28,14 @@ def register(request):
 			return HttpResponseRedirect('/')
 	return render_to_response('register.html', context_instance=RequestContext(request))
 
-def user_login(request):
+def login(request):
 	email = request.POST['username']
 	password = request.POST['password']
-	user = authenticate(username='john', password='secret')
+	user = authenticate(username=email, password=password)
 	if user is not None:
 		if user.is_active:
-		    return HttpResponseRedirect(reverse('games'))
+			return HttpResponseRedirect(reverse('games'))
 		else:
 		    return HttpResponse("The password is valid, but the account has been disabled!")
 	else:
-		print("The username and password were incorrect.")
+		return HttpResponse("The username and password were incorrect.")
